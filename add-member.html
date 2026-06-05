@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Add Member — RCCG ON EAGLES WINGS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="app-page">
+
+<aside class="sidebar">
+ <div class="sidebar-logo">
+   <img src="images/oew_logo (2).png" alt="RCCG ON EAGLES WINGS">
+    <div>
+      <div class="logo-name">RCCG ON EAGLES WINGS</div>
+      <div class="logo-sub">Member Registry</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="dashboard.html" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </a>
+    <a href="members.html" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.85"/></svg>
+      All Members
+    </a>
+    <a href="add-member.html" class="nav-item active">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/><line x1="12" y1="17" x2="12" y2="23"/><line x1="9" y1="20" x2="15" y2="20"/></svg>
+      Add Member
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-badge">
+      <div class="user-avatar">A</div>
+      <div>
+        <div class="user-name" id="sidebar-username">Admin</div>
+        <div class="user-role">Team Member</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="logout()">Sign out</button>
+  </div>
+</aside>
+
+<main class="main-content">
+   <div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+  <div class="page-header">
+    <div class="page-header-left">
+      <button class="hamburger" onclick="openSidebar()" aria-label="Open menu"><span></span></button>
+      <div>
+        <h1 class="page-title"> Add New Member</h1>
+        <p class="page-sub">Fill in the member's details below</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="form-section">
+      <h3 class="form-section-title">Personal Information</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>First Name <span class="req">*</span></label>
+          <input type="text" id="f-fname" placeholder="e.g. Adaeze" />
+        </div>
+        <div class="form-group">
+          <label>Last Name <span class="req">*</span></label>
+          <input type="text" id="f-lname" placeholder="e.g. Okafor" />
+        </div>
+        <div class="form-group">
+          <label>Gender</label>
+          <select id="f-gender">
+            <option value="">Select gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Date of Birth</label>
+          <input type="date" id="f-dob" />
+        </div>
+        <div class="form-group">
+          <label>Marital Status</label>
+          <select id="f-marital">
+            <option value="">Select</option>
+            <option value="Single">Single</option>
+            <option value="Married">Married</option>
+            <option value="Widowed">Widowed</option>
+            <option value="Divorced">Divorced</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Occupation</label>
+          <input type="text" id="f-occupation" placeholder="e.g. Teacher, Engineer..." />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-divider"></div>
+
+    <div class="form-section">
+      <h3 class="form-section-title">Contact Information</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Phone Number <span class="req">*</span></label>
+          <input type="tel" id="f-phone" placeholder="e.g. 0812 345 6789" />
+        </div>
+        <div class="form-group">
+          <label>Alternative Phone</label>
+          <input type="tel" id="f-phone2" placeholder="e.g. 0901 234 5678" />
+        </div>
+        <div class="form-group form-group-full">
+          <label>Email Address</label>
+          <input type="email" id="f-email" placeholder="e.g. adaeze@email.com" />
+        </div>
+        <div class="form-group form-group-full">
+          <label>Home Address</label>
+          <input type="text" id="f-address" placeholder="e.g. 14 Bode Thomas Street, Surulere, Lagos" />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-divider"></div>
+
+    <div class="form-section">
+      <h3 class="form-section-title">Church Information</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Membership Status <span class="req">*</span></label>
+          <select id="f-status">
+            <option value="new">New Member</option>
+            <option value="existing">Existing Member</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>How They Heard About Us</label>
+          <select id="f-source">
+            <option value="">Select</option>
+            <option value="Friend's invite">Friend's invite</option>
+            <option value="Family">Family</option>
+            <option value="Social media">Social media</option>
+            <option value="Walk-in">Walk-in</option>
+            <option value="Crusade / event">Crusade / event</option>
+            <option value="Online search">Online search</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Cell Group / Unit</label>
+          <input type="text" id="f-cell" placeholder="e.g. Youth, Choir, Ushers..." />
+        </div>
+        <div class="form-group">
+          <label>Date of First Visit</label>
+          <input type="date" id="f-visit" />
+        </div>
+        <div class="form-group form-group-full">
+          <label>Notes / Additional Information</label>
+          <textarea id="f-notes" rows="3" placeholder="Any other relevant information about this member..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-ghost" onclick="clearForm()">Clear form</button>
+      <button class="btn-save" onclick="saveMember()">Save Member</button>
+    </div>
+    <div id="form-msg" class="form-msg" style="display:none"></div>
+  </div>
+</main>
+
+<script src="js/data.js"></script>
+<script>
+requireAuth();
+document.getElementById('sidebar-username').textContent = sessionStorage.getItem('gc_user') || 'Admin';
+
+function clearForm() {
+  ['f-fname','f-lname','f-phone','f-phone2','f-email','f-address','f-occupation','f-cell','f-notes'].forEach(id => document.getElementById(id).value = '');
+  ['f-gender','f-marital','f-source','f-status'].forEach(id => document.getElementById(id).selectedIndex = 0);
+  ['f-dob','f-visit'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('form-msg').style.display='none';
+}
+
+function saveMember() {
+  const fname = document.getElementById('f-fname').value.trim();
+  const lname = document.getElementById('f-lname').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  const msg = document.getElementById('form-msg');
+
+  if (!fname || !lname || !phone) {
+    msg.style.display='block';
+    msg.className='form-msg form-msg-error';
+    msg.textContent='Please fill in first name, last name, and phone number.';
+    return;
+  }
+
+  const member = {
+    firstName: fname,
+    lastName: lname,
+    phone,
+    phone2: document.getElementById('f-phone2').value.trim(),
+    email: document.getElementById('f-email').value.trim(),
+    address: document.getElementById('f-address').value.trim(),
+    gender: document.getElementById('f-gender').value,
+    dob: document.getElementById('f-dob').value,
+    marital: document.getElementById('f-marital').value,
+    occupation: document.getElementById('f-occupation').value.trim(),
+    status: document.getElementById('f-status').value,
+    source: document.getElementById('f-source').value,
+    cell: document.getElementById('f-cell').value.trim(),
+    firstVisit: document.getElementById('f-visit').value,
+    notes: document.getElementById('f-notes').value.trim(),
+    dateAdded: new Date().toISOString().slice(0,10)
+  };
+
+  addMember(member);
+  msg.style.display='block';
+  msg.className='form-msg form-msg-success';
+  msg.textContent=`✓ ${fname} ${lname} has been saved successfully.`;
+  clearForm();
+  setTimeout(() => { window.location.href='members.html'; }, 1400);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard — RCCG ON EAGLES WINGS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="app-page">
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+   <img src="images/oew_logo (2).png" alt="RCCG ON EAGLES WINGS">
+    <div>
+      <div class="logo-name">RCCG ON EAGLES WINGS</div>
+      <div class="logo-sub">Member Registry</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a href="dashboard.html" class="nav-item active">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </a>
+    <a href="members.html" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.85"/></svg>
+      All Members
+    </a>
+    <a href="add-member.html" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/><line x1="12" y1="17" x2="12" y2="23"/><line x1="9" y1="20" x2="15" y2="20"/></svg>
+      Add Member
+    </a>
+  </nav>
+
+ <div class="sidebar-footer">
+    <div class="user-badge">
+      <div class="user-avatar">A</div>
+      <div>
+        <div class="user-name" id="sidebar-username">Admin</div>
+        <div class="user-role">Team Member</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="logout()">Sign out</button>
+  </div>
+</aside>
+
+<main class="main-content">
+  <div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+  <div class="page-header">
+    <div class="page-header-left">
+      <button class="hamburger" onclick="openSidebar()" aria-label="Open menu"><span></span></button>
+      <div>
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-sub" id="today-date"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-gold">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.85"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <div class="stat-body">
+        <div class="stat-val" id="s-total">—</div>
+        <div class="stat-label">Total Members</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-green">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/><line x1="12" y1="17" x2="12" y2="23"/><line x1="9" y1="20" x2="15" y2="20"/></svg>
+      </div>
+      <div class="stat-body">
+        <div class="stat-val" id="s-new">—</div>
+        <div class="stat-label">New Members</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-blue">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="stat-body">
+        <div class="stat-val" id="s-existing">—</div>
+        <div class="stat-label">Existing Members</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-purple">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div class="stat-body">
+        <div class="stat-val" id="s-month">—</div>
+        <div class="stat-label">Added This Month</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-row">
+    <div class="section-title-row">
+      <h2 class="section-title">Recent Members</h2>
+      <a href="members.html" class="see-all">View all →</a>
+    </div>
+    <div class="table-wrap">
+      <table class="members-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Date Added</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="recent-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<script src="js/data.js"></script>
+<script>
+requireAuth();
+document.getElementById('sidebar-username').textContent = sessionStorage.getItem('gc_user') || 'Admin';
+
+const members = getMembers();
+document.getElementById('s-total').textContent = members.length;
+document.getElementById('s-new').textContent = members.filter(m=>m.status==='new').length;
+document.getElementById('s-existing').textContent = members.filter(m=>m.status==='existing').length;
+
+const now = new Date();
+document.getElementById('today-date').textContent = now.toLocaleDateString('en-NG',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+const thisMonth = members.filter(m => {
+  const d = new Date(m.dateAdded);
+  return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
+});
+document.getElementById('s-month').textContent = thisMonth.length;
+
+const recent = [...members].sort((a,b) => new Date(b.dateAdded)-new Date(a.dateAdded)).slice(0,6);
+const tbody = document.getElementById('recent-tbody');
+tbody.innerHTML = recent.map(m => `
+  <tr onclick="window.location='member-detail.html?id=${m.id}'" style="cursor:pointer">
+    <td><div class="name-cell"><div class="avatar-sm" style="background:${avatarBg(m.id)}">${initials(m)}</div>${m.firstName} ${m.lastName}</div></td>
+    <td>${m.phone}</td>
+    <td>${formatDate(m.dateAdded)}</td>
+    <td><span class="badge badge-${m.status}">${m.status==='new'?'New':'Existing'}</span></td>
+  </tr>
+`).join('');
+
+function initials(m){ return (m.firstName[0]+m.lastName[0]).toUpperCase(); }
+function avatarBg(id){ const c=['#e8d5b7','#c9d5e8','#d5e8d5','#e8d5e0','#d5e0e8','#e8e4d5']; return c[id%c.length]; }
+function formatDate(d){ return new Date(d).toLocaleDateString('en-NG',{day:'2-digit',month:'short',year:'numeric'}); }
+</script>
+</body>
+</html>
