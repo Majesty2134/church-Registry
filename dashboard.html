@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="style.css" />
 </head>
 <body class="app-page">
 
@@ -119,38 +119,60 @@
   </div>
 </main>
 
-<script src="js/data.js"></script>
-<script>
-requireAuth();
-document.getElementById('sidebar-username').textContent = sessionStorage.getItem('gc_user') || 'Admin';
+<script src="data.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const members = getMembers();
-document.getElementById('s-total').textContent = members.length;
-document.getElementById('s-new').textContent = members.filter(m=>m.status==='new').length;
-document.getElementById('s-existing').textContent = members.filter(m=>m.status==='existing').length;
+  const firebaseConfig = {
+    apiKey: "AIzaSyAihMWWgeEq_hVxH7taxbIv5Yy6oM2rhsA",
+    authDomain: "rccg-on-eagles-wings.firebaseapp.com",
+    projectId: "rccg-on-eagles-wings",
+    storageBucket: "rccg-on-eagles-wings.firebasestorage.app",
+    messagingSenderId: "1078040782537",
+    appId: "1:1078040782537:web:a117ba6414a8b6a7d8cf18"
+  };
 
-const now = new Date();
-document.getElementById('today-date').textContent = now.toLocaleDateString('en-NG',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-const thisMonth = members.filter(m => {
-  const d = new Date(m.dateAdded);
-  return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
-});
-document.getElementById('s-month').textContent = thisMonth.length;
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-const recent = [...members].sort((a,b) => new Date(b.dateAdded)-new Date(a.dateAdded)).slice(0,6);
-const tbody = document.getElementById('recent-tbody');
-tbody.innerHTML = recent.map(m => `
-  <tr onclick="window.location='member-detail.html?id=${m.id}'" style="cursor:pointer">
-    <td><div class="name-cell"><div class="avatar-sm" style="background:${avatarBg(m.id)}">${initials(m)}</div>${m.firstName} ${m.lastName}</div></td>
-    <td>${m.phone}</td>
-    <td>${formatDate(m.dateAdded)}</td>
-    <td><span class="badge badge-${m.status}">${m.status==='new'?'New':'Existing'}</span></td>
-  </tr>
-`).join('');
+  requireAuth();
+ document.getElementById('sidebar-username').textContent = 'Admin';
 
-function initials(m){ return (m.firstName[0]+m.lastName[0]).toUpperCase(); }
-function avatarBg(id){ const c=['#e8d5b7','#c9d5e8','#d5e8d5','#e8d5e0','#d5e0e8','#e8e4d5']; return c[id%c.length]; }
-function formatDate(d){ return new Date(d).toLocaleDateString('en-NG',{day:'2-digit',month:'short',year:'numeric'}); }
+  function initials(m){ return (m.firstName[0]+m.lastName[0]).toUpperCase(); }
+  function avatarBg(id){ const c=['#e8d5b7','#c9d5e8','#d5e8d5','#e8d5e0','#d5e0e8','#e8e4d5']; return c[id%6]; }
+  function formatDate(d){ return new Date(d).toLocaleDateString('en-NG',{day:'2-digit',month:'long',year:'numeric'}); }
+
+  const now = new Date();
+  document.getElementById('today-date').textContent = now.toLocaleDateString('en-NG',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  async function loadDashboard() {
+    const snapshot = await getDocs(collection(db, 'members'));
+    const members = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    document.getElementById('s-total').textContent = members.length;
+    document.getElementById('s-new').textContent = members.filter(m=>m.status==='new').length;
+    document.getElementById('s-existing').textContent = members.filter(m=>m.status==='existing').length;
+
+    const thisMonth = members.filter(m => {
+      const d = new Date(m.dateAdded);
+      return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
+    });
+    document.getElementById('s-month').textContent = thisMonth.length;
+
+    const recent = [...members].sort((a,b) => new Date(b.dateAdded)-new Date(a.dateAdded)).slice(0,6);
+    const tbody = document.getElementById('recent-tbody');
+    tbody.innerHTML = recent.map((m,i) => `
+      <tr onclick="window.location='member-detail.html?id=${m.id}'" style="cursor:pointer">
+        <td><div class="name-cell"><div class="avatar-sm" style="background:${avatarBg(i)}">${initials(m)}</div>${m.firstName} ${m.lastName}</div></td>
+        <td>${m.phone}</td>
+        <td>${formatDate(m.dateAdded)}</td>
+        <td><span class="badge badge-${m.status}">${m.status==='new'?'New':'Existing'}</span></td>
+      </tr>
+    `).join('');
+  }
+
+  loadDashboard();
 </script>
 </body>
 </html>

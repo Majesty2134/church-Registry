@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="style.css" />
 </head>
 <body class="app-page">
 
@@ -149,7 +149,7 @@
         </div>
         <div class="form-group">
           <label>Cell Group / Unit</label>
-          <input type="text" id="f-cell" placeholder="e.g. Youth, Choir, Ushers..." />
+          <input type="text" id="f-cell" placeholder="e.g. Youth, TOJ, Ushers..." />
         </div>
         <div class="form-group">
           <label>Date of First Visit</label>
@@ -170,57 +170,80 @@
   </div>
 </main>
 
-<script src="js/data.js"></script>
-<script>
-requireAuth();
-document.getElementById('sidebar-username').textContent = sessionStorage.getItem('gc_user') || 'Admin';
+<script src="data.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-function clearForm() {
-  ['f-fname','f-lname','f-phone','f-phone2','f-email','f-address','f-occupation','f-cell','f-notes'].forEach(id => document.getElementById(id).value = '');
-  ['f-gender','f-marital','f-source','f-status'].forEach(id => document.getElementById(id).selectedIndex = 0);
-  ['f-dob','f-visit'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('form-msg').style.display='none';
-}
-
-function saveMember() {
-  const fname = document.getElementById('f-fname').value.trim();
-  const lname = document.getElementById('f-lname').value.trim();
-  const phone = document.getElementById('f-phone').value.trim();
-  const msg = document.getElementById('form-msg');
-
-  if (!fname || !lname || !phone) {
-    msg.style.display='block';
-    msg.className='form-msg form-msg-error';
-    msg.textContent='Please fill in first name, last name, and phone number.';
-    return;
-  }
-
-  const member = {
-    firstName: fname,
-    lastName: lname,
-    phone,
-    phone2: document.getElementById('f-phone2').value.trim(),
-    email: document.getElementById('f-email').value.trim(),
-    address: document.getElementById('f-address').value.trim(),
-    gender: document.getElementById('f-gender').value,
-    dob: document.getElementById('f-dob').value,
-    marital: document.getElementById('f-marital').value,
-    occupation: document.getElementById('f-occupation').value.trim(),
-    status: document.getElementById('f-status').value,
-    source: document.getElementById('f-source').value,
-    cell: document.getElementById('f-cell').value.trim(),
-    firstVisit: document.getElementById('f-visit').value,
-    notes: document.getElementById('f-notes').value.trim(),
-    dateAdded: new Date().toISOString().slice(0,10)
+  const firebaseConfig = {
+    apiKey: "AIzaSyAihMWWgeEq_hVxH7taxbIv5Yy6oM2rhsA",
+    authDomain: "rccg-on-eagles-wings.firebaseapp.com",
+    projectId: "rccg-on-eagles-wings",
+    storageBucket: "rccg-on-eagles-wings.firebasestorage.app",
+    messagingSenderId: "1078040782537",
+    appId: "1:1078040782537:web:a117ba6414a8b6a7d8cf18"
   };
 
-  addMember(member);
-  msg.style.display='block';
-  msg.className='form-msg form-msg-success';
-  msg.textContent=`✓ ${fname} ${lname} has been saved successfully.`;
-  clearForm();
-  setTimeout(() => { window.location.href='members.html'; }, 1400);
-}
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  requireAuth();
+  document.getElementById('sidebar-username').textContent = sessionStorage.getItem('gc_user') || 'Admin';
+
+  function clearForm() {
+    ['f-fname','f-lname','f-phone','f-phone2','f-email','f-address','f-occupation','f-cell','f-notes'].forEach(id => document.getElementById(id).value = '');
+    ['f-gender','f-marital','f-source','f-status'].forEach(id => document.getElementById(id).selectedIndex = 0);
+    ['f-dob','f-visit'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('form-msg').style.display = 'none';
+  }
+
+  window.clearForm = clearForm;
+
+  window.saveMember = async function() {
+    const fname = document.getElementById('f-fname').value.trim();
+    const lname = document.getElementById('f-lname').value.trim();
+    const phone = document.getElementById('f-phone').value.trim();
+    const msg = document.getElementById('form-msg');
+
+    if (!fname || !lname || !phone) {
+      msg.style.display = 'block';
+      msg.className = 'form-msg form-msg-error';
+      msg.textContent = 'Please fill in first name, last name, and phone number.';
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, 'members'), {
+        firstName: fname,
+        lastName: lname,
+        phone,
+        phone2: document.getElementById('f-phone2').value.trim(),
+        email: document.getElementById('f-email').value.trim(),
+        address: document.getElementById('f-address').value.trim(),
+        gender: document.getElementById('f-gender').value,
+        dob: document.getElementById('f-dob').value,
+        marital: document.getElementById('f-marital').value,
+        occupation: document.getElementById('f-occupation').value.trim(),
+        status: document.getElementById('f-status').value,
+        source: document.getElementById('f-source').value,
+        cell: document.getElementById('f-cell').value.trim(),
+        firstVisit: document.getElementById('f-visit').value,
+        notes: document.getElementById('f-notes').value.trim(),
+        dateAdded: new Date().toISOString().slice(0, 10)
+      });
+
+      msg.style.display = 'block';
+      msg.className = 'form-msg form-msg-success';
+      msg.textContent = `✓ ${fname} ${lname} has been saved successfully.`;
+      clearForm();
+      setTimeout(() => { window.location.href = 'members.html'; }, 1400);
+    } catch (e) {
+      msg.style.display = 'block';
+      msg.className = 'form-msg form-msg-error';
+      msg.textContent = 'Error saving member. Please try again.';
+      console.error(e);
+    }
+  }
 </script>
 </body>
 </html>

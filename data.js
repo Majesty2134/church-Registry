@@ -1,3 +1,4 @@
+/* ── Sidebar toggle (mobile) ── */
 function openSidebar() {
   document.querySelector('.sidebar').classList.add('open');
   const overlay = document.getElementById('overlay');
@@ -22,20 +23,4 @@ function logout() {
   sessionStorage.removeItem('gc_auth');
   sessionStorage.removeItem('gc_user');
   window.location.href = 'index.html';
-}
-
-const SEED = [];
-
-function getMembers() {
-  const stored = localStorage.getItem('gc_members');
-  if (stored) return JSON.parse(stored);
-  localStorage.setItem('gc_members', JSON.stringify(SEED));
-  return SEED;
-}
-
-function addMember(data) {
-  const members = getMembers();
-  const maxId = members.reduce((max, m) => Math.max(max, m.id), 0);
-  members.unshift({ id: maxId + 1, ...data });
-  localStorage.setItem('gc_members', JSON.stringify(members));
 }

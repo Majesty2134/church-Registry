@@ -209,6 +209,7 @@ body {
   left: 0;
   height: 100vh;
   z-index: 10;
+  overflow: hidden; /* ← add this */
 }
 
 .sidebar-logo {
@@ -267,6 +268,7 @@ body {
 .sidebar-footer {
   padding: 1rem 1.25rem;
   border-top: 1px solid var(--border);
+   overflow: hidden;
 }
 .user-badge {
   display: flex;
@@ -300,6 +302,13 @@ body {
   cursor: pointer;
   font-family: 'DM Sans', sans-serif;
   transition: background 0.15s, color 0.15s;
+}
+.user-role { 
+  font-size: 11px; 
+  color: var(--muted); 
+  white-space: nowrap;      /* add this */
+  overflow: hidden;          /* add this */
+  text-overflow: ellipsis;   /* add this */
 }
 .logout-btn:hover { background: var(--red-light); color: var(--red); border-color: var(--red); }
 

@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="style.css"/>
 </head>
 <body class="login-page">
 
@@ -41,22 +41,40 @@
   </div>
 </div>
 
-<script>
-function doLogin() {
-  const u = document.getElementById('username').value.trim();
-  const p = document.getElementById('password').value.trim();
-  const err = document.getElementById('login-error');
-  if (u === 'admin' && p === 'grace2024') {
-    sessionStorage.setItem('gc_auth', '1');
-    sessionStorage.setItem('gc_user', u);
-    window.location.href = 'dashboard.html';
-  } else {
-    err.style.display = 'block';
-    document.getElementById('password').value = '';
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAihMWWgeEq_hVxH7taxbIv5Yy6oM2rhsA",
+    authDomain: "rccg-on-eagles-wings.firebaseapp.com",
+    projectId: "rccg-on-eagles-wings",
+    storageBucket: "rccg-on-eagles-wings.firebasestorage.app",
+    messagingSenderId: "1078040782537",
+    appId: "1:1078040782537:web:a117ba6414a8b6a7d8cf18"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  if (sessionStorage.getItem('gc_auth')) window.location.href = 'dashboard.html';
+
+  window.doLogin = async function() {
+    const email = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const err = document.getElementById('login-error');
+    try {
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      sessionStorage.setItem('gc_auth', '1');
+      sessionStorage.setItem('gc_user', result.user.email);
+      window.location.href = 'dashboard.html';
+    } catch (e) {
+      err.style.display = 'block';
+      document.getElementById('password').value = '';
+    }
   }
-}
-document.addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
-if (sessionStorage.getItem('gc_auth')) window.location.href = 'dashboard.html';
+
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') window.doLogin(); });
 </script>
 </body>
 </html>
