@@ -164,16 +164,21 @@
 
     <div class="form-actions">
       <button class="btn-ghost" onclick="clearForm()">Clear form</button>
-      <button class="btn-save" onclick="saveMember()">Save Member</button>
+     <button class="btn-save" id="save-btn" onclick="saveMember()">Save Member</button>
     </div>
     <div id="form-msg" class="form-msg" style="display:none"></div>
   </div>
+   <watermark class="add-member">
+    <span class="brand-name"> Built by Majesty</span> 
+       <span class="EST">&#9412; 2026</span>
+    </watermark>
 </main>
 
 <script src="data.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAihMWWgeEq_hVxH7taxbIv5Yy6oM2rhsA",
@@ -186,9 +191,20 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  const auth = getAuth(app);
 
   requireAuth();
-  document.getElementById('sidebar-username').textContent = sessionStorage.getItem('gc_user') || 'Admin';
+  document.getElementById('sidebar-username').textContent = 'Admin';
+
+  let authReady = false;
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      authReady = true;
+    } else {
+      window.location.href = 'index.html';
+    }
+  });
 
   function clearForm() {
     ['f-fname','f-lname','f-phone','f-phone2','f-email','f-address','f-occupation','f-cell','f-notes'].forEach(id => document.getElementById(id).value = '');
@@ -204,6 +220,7 @@
     const lname = document.getElementById('f-lname').value.trim();
     const phone = document.getElementById('f-phone').value.trim();
     const msg = document.getElementById('form-msg');
+    const saveBtn = document.getElementById('save-btn');
 
     if (!fname || !lname || !phone) {
       msg.style.display = 'block';
@@ -211,6 +228,16 @@
       msg.textContent = 'Please fill in first name, last name, and phone number.';
       return;
     }
+
+    if (!authReady) {
+      msg.style.display = 'block';
+      msg.className = 'form-msg form-msg-error';
+      msg.textContent = 'Still verifying your session — please wait a moment and try again.';
+      return;
+    }
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
 
     try {
       await addDoc(collection(db, 'members'), {
@@ -242,6 +269,8 @@
       msg.className = 'form-msg form-msg-error';
       msg.textContent = 'Error saving member. Please try again.';
       console.error(e);
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save Member';
     }
   }
 </script>

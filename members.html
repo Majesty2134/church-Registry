@@ -95,12 +95,17 @@
       <p>No members match your search</p>
     </div>
   </div>
+   <watermark class="dashboard">
+    <span class="brand-name"> Built by Majesty</span> 
+       <span class="EST">&#9412; 2026</span>
+    </watermark>
 </main>
 
 <script src="data.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAihMWWgeEq_hVxH7taxbIv5Yy6oM2rhsA",
@@ -113,6 +118,7 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  const auth = getAuth(app);
 
   requireAuth();
   document.getElementById('sidebar-username').textContent = 'Admin';
@@ -124,9 +130,13 @@
   let allMembers = [];
 
   async function loadMembers() {
-    const snapshot = await getDocs(collection(db, 'members'));
-    allMembers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    filter();
+    try {
+      const snapshot = await getDocs(collection(db, 'members'));
+      allMembers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      filter();
+    } catch (e) {
+      console.error('Failed to load members:', e);
+    }
   }
 
   window.filter = function() {
@@ -163,7 +173,13 @@
     `).join('');
   }
 
-  loadMembers();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      loadMembers();
+    } else {
+      window.location.href = 'index.html';
+    }
+  });
 </script>
 </body>
 </html>

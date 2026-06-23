@@ -31,17 +31,35 @@
       <input type="text" id="username" placeholder="Enter your username" />
     </div>
     <div class="form-group">
-      <label>Password</label>
+      <div class="password-wrapper"> 
+      <label class="login-password">Password</label>
       <input type="password" id="password" placeholder="Enter your password" />
+     <button type="button" id="toggle-password">Show</button>
+      </div>
     </div>
     <div id="login-error" class="login-error" style="display:none">Incorrect username or password</div>
-    <button class="btn-full" onclick="doLogin()">Sign In</button>
+    <button class="btn-full" id="signin-btn" onclick="doLogin()">Sign In</button>
 
-    
+    <watermark>
+    <span class="brand-name"> Built by Majesty</span> 
+       <span class="EST">&#9412; 2026</span>
+    </watermark>
   </div>
 </div>
 
 <script type="module">
+  const passwordInput = document.getElementById('password');
+const togglePassword = document.getElementById('toggle-password');
+
+togglePassword.addEventListener('click', () => {
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+    togglePassword.textContent = 'Hide';
+  } else {
+    passwordInput.type = 'password';
+    togglePassword.textContent = 'Show';
+  }
+});
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
@@ -59,20 +77,28 @@
 
   if (sessionStorage.getItem('gc_auth')) window.location.href = 'dashboard.html';
 
-  window.doLogin = async function() {
-    const email = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const err = document.getElementById('login-error');
-    try {
-      const result = await signInWithEmailAndPassword(auth, email, password);
-      sessionStorage.setItem('gc_auth', '1');
-      sessionStorage.setItem('gc_user', result.user.email);
-      window.location.href = 'dashboard.html';
-    } catch (e) {
-      err.style.display = 'block';
-      document.getElementById('password').value = '';
-    }
+ window.doLogin = async function() {
+  const email = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value.trim(); // match your actual id
+  const err = document.getElementById('login-error');
+  const btn = document.getElementById('signin-btn');
+
+  err.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Signing in...';
+
+  try {
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    sessionStorage.setItem('gc_auth', '1');
+    sessionStorage.setItem('gc_user', result.user.email);
+    window.location.href = 'dashboard.html';
+  } catch (e) {
+    err.style.display = 'block';
+    document.getElementById('password').value = '';
+    btn.disabled = false;
+    btn.textContent = 'Sign In';
   }
+}
 
   document.addEventListener('keydown', e => { if (e.key === 'Enter') window.doLogin(); });
 </script>

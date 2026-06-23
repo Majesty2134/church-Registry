@@ -117,12 +117,17 @@
       </table>
     </div>
   </div>
+   <watermark class="dashboard">
+    <span class="brand-name"> Built by Majesty</span> 
+       <span class="EST">&#9412; 2026</span>
+    </watermark>
 </main>
 
 <script src="data.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAihMWWgeEq_hVxH7taxbIv5Yy6oM2rhsA",
@@ -135,9 +140,10 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  const auth = getAuth(app);
 
   requireAuth();
- document.getElementById('sidebar-username').textContent = 'Admin';
+  document.getElementById('sidebar-username').textContent = 'Admin';
 
   function initials(m){ return (m.firstName[0]+m.lastName[0]).toUpperCase(); }
   function avatarBg(id){ const c=['#e8d5b7','#c9d5e8','#d5e8d5','#e8d5e0','#d5e0e8','#e8e4d5']; return c[id%6]; }
@@ -147,32 +153,45 @@
   document.getElementById('today-date').textContent = now.toLocaleDateString('en-NG',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 
   async function loadDashboard() {
-    const snapshot = await getDocs(collection(db, 'members'));
-    const members = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    try {
+      const snapshot = await getDocs(collection(db, 'members'));
+      const members = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-    document.getElementById('s-total').textContent = members.length;
-    document.getElementById('s-new').textContent = members.filter(m=>m.status==='new').length;
-    document.getElementById('s-existing').textContent = members.filter(m=>m.status==='existing').length;
+      document.getElementById('s-total').textContent = members.length;
+      document.getElementById('s-new').textContent = members.filter(m=>m.status==='new').length;
+      document.getElementById('s-existing').textContent = members.filter(m=>m.status==='existing').length;
 
-    const thisMonth = members.filter(m => {
-      const d = new Date(m.dateAdded);
-      return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
-    });
-    document.getElementById('s-month').textContent = thisMonth.length;
+      const thisMonth = members.filter(m => {
+        const d = new Date(m.dateAdded);
+        return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
+      });
+      document.getElementById('s-month').textContent = thisMonth.length;
 
-    const recent = [...members].sort((a,b) => new Date(b.dateAdded)-new Date(a.dateAdded)).slice(0,6);
-    const tbody = document.getElementById('recent-tbody');
-    tbody.innerHTML = recent.map((m,i) => `
-      <tr onclick="window.location='member-detail.html?id=${m.id}'" style="cursor:pointer">
-        <td><div class="name-cell"><div class="avatar-sm" style="background:${avatarBg(i)}">${initials(m)}</div>${m.firstName} ${m.lastName}</div></td>
-        <td>${m.phone}</td>
-        <td>${formatDate(m.dateAdded)}</td>
-        <td><span class="badge badge-${m.status}">${m.status==='new'?'New':'Existing'}</span></td>
-      </tr>
-    `).join('');
+      const recent = [...members].sort((a,b) => new Date(b.dateAdded)-new Date(a.dateAdded)).slice(0,6);
+      const tbody = document.getElementById('recent-tbody');
+      tbody.innerHTML = recent.map((m,i) => `
+        <tr onclick="window.location='member-detail.html?id=${m.id}'" style="cursor:pointer">
+          <td><div class="name-cell"><div class="avatar-sm" style="background:${avatarBg(i)}">${initials(m)}</div>${m.firstName} ${m.lastName}</div></td>
+          <td>${m.phone}</td>
+          <td>${formatDate(m.dateAdded)}</td>
+          <td><span class="badge badge-${m.status}">${m.status==='new'?'New':'Existing'}</span></td>
+        </tr>
+      `).join('');
+    } catch (e) {
+      console.error('Failed to load dashboard data:', e);
+    }
   }
 
-  loadDashboard();
+ firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    if (isSessionExpired()) {
+      forceLogout();
+      return;
+    }
+    } else {
+      window.location.href = 'index.html';
+    }
+  });
 </script>
 </body>
 </html>
